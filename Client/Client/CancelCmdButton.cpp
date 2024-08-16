@@ -1,0 +1,64 @@
+#include "pch.h"
+#include "CancelCmdButton.h"
+
+#include "GameManager.h"
+#include "SoundManager.h"
+#include "KeyManager.h"
+#include "Scene.h"
+#include "Cursor.h"
+#include "Player.h"
+#include "SCV.h"
+using namespace std;
+
+void CCancelCmdButton::Initialize()
+{
+	CCmdButton::Initialize();
+	SetButtonState(EButtonState::RELEASE);
+	SetCurSprite(GetSpriteAt(EButtonState::RELEASE));
+	SetPosition({ 769.0f, 570.0f });
+	SetSize({ 44, 44 });
+	SetUIActive(false);
+}
+
+void CCancelCmdButton::Update()
+{
+	CCmdButton::Update();
+	if (!m_bUIActive) { return; }
+
+	if (CKeyManager::GetManager()->IsKeyDown((int32)EKeyType::ESC))
+	{
+		CSoundManager::GetManager()->PlaySoundEx(L"button.wav", ESoundChannel::CONTROL_CENTER, 1.0f);
+		CGameManager::GetManager()->SendCommand(ECommandType::CANCEL);
+		CScene::s_pCursor->SetCursorCmdMode(ECursorCommandMode::MOUSE_MODE);
+		CScene::s_pCursor->SetWaitingCommandType(ECommandType::ENUM_END);
+		CScene::s_pCursor->SetCurBPSprite(nullptr);
+	}
+}
+
+void CCancelCmdButton::LateUpdate()
+{
+	CCmdButton::LateUpdate();
+	if (!m_bUIActive) { return; }
+}
+
+void CCancelCmdButton::Render(HDC _hDC)
+{
+	CCmdButton::Render(_hDC);
+	if (!m_bUIActive) { return; }
+}
+
+void CCancelCmdButton::Release()
+{
+	CCmdButton::Release();
+}
+
+void CCancelCmdButton::OnButtonClick()
+{
+	if (!m_bUIActive) { return; }
+
+	CCmdButton::OnButtonClick();
+	CGameManager::GetManager()->SendCommand(ECommandType::CANCEL);
+	CScene::s_pCursor->SetCursorCmdMode(ECursorCommandMode::MOUSE_MODE);
+	CScene::s_pCursor->SetWaitingCommandType(ECommandType::ENUM_END);
+	CScene::s_pCursor->SetCurBPSprite(nullptr);
+}
