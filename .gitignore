@@ -396,3 +396,9 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# framework
+Client/*.sln
+Client/Resources/*
+Client/Client/*.vcxproj
+Client/Client/*.vcxproj.filters
